@@ -1,0 +1,6 @@
+@BudgetBlitz.Presentation_HostAddress = http://localhost:5063
+
+GET {{BudgetBlitz.Presentation_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
