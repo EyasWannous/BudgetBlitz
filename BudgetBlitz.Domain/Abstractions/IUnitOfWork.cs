@@ -9,5 +9,6 @@ public interface IUnitOfWork : IDisposable
     ICategoryRepository Categories { get; }
     IExpenseRepository Expenses { get; }
     IRefreshTokenRepository RefreshTokens { get; }
+    IUserDeviceRepository UserDevices { get; }
     Task<int> CompleteAsync();
 }

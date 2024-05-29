@@ -13,7 +13,7 @@ public class AppDbContext(DbContextOptions options) : IdentityDbContext<User, Id
     public DbSet<Category> Categories { get; set; }
     public DbSet<Expense> Expenses { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
-
+    public DbSet<UserDevice> UserDevices { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

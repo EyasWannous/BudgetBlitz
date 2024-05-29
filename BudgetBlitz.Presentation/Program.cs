@@ -1,14 +1,17 @@
 using BudgetBlitz.Application.IServices;
-using BudgetBlitz.Infrastructure.Services;
+using BudgetBlitz.Application.Options;
 using BudgetBlitz.Domain.Abstractions;
 using BudgetBlitz.Domain.Models;
 using BudgetBlitz.Infrastructure.Data;
-using BudgetBlitz.Application.Options;
+using BudgetBlitz.Infrastructure.Services;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +26,36 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+
+builder.Services.AddSwaggerGen(option =>
+{
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "BudgetBlitz API", Version = "v1" });
+
+    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer",
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
 
 //builder.Services.AddStackExchangeRedisCache(redisOpitons =>
 //{
@@ -43,6 +76,8 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IFirebaseService, FirebaseService>();
+builder.Services.AddScoped<IDataExportService, DataExportService>();
 
 // Cache Confiugration Start
 // First Way
@@ -123,6 +158,19 @@ builder.Services.AddAuthentication(options =>
 });
 // Jwt Bearer End
 
+
+// Firebase
+FirebaseApp.Create(new AppOptions()
+{
+    Credential = GoogleCredential.FromFile
+    (
+        Path.Combine
+        (
+            AppDomain.CurrentDomain.BaseDirectory,
+            "budgetblitz-96d43-firebase-adminsdk-6j2me-fad541b3f0.json"
+        )
+    ),
+});
 
 
 var app = builder.Build();

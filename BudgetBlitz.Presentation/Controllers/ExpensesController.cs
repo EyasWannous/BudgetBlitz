@@ -2,10 +2,12 @@
 using BudgetBlitz.Domain.Models;
 using BudgetBlitz.Presentation.DTO.Expense;
 using BudgetBlitz.Presentation.Mappers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BudgetBlitz.Presentation.Controllers;
 
+[Authorize]
 public class ExpensesController(IUnitOfWork unitOfWork) : BaseContoller(unitOfWork)
 {
 

@@ -20,6 +20,8 @@ public class UnitOfWork(AppDbContext context, ICacheService cacheService) : IUni
     
     public IRefreshTokenRepository RefreshTokens { get; } = new RefreshTokenRepository(context, cacheService);
 
+    public IUserDeviceRepository UserDevices { get; } = new UserDeviceRepository(context, cacheService);
+
     public async Task<int> CompleteAsync() => await _context.SaveChangesAsync();
 
     public void Dispose() => _context.Dispose();

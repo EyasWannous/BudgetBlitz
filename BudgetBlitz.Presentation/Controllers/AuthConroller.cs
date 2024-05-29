@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BudgetBlitz.Presentation.Controllers;
 
-public class AuthConroller(IUnitOfWork unitOfWork, IUserService userService, ITokenService tokenService) : BaseContoller(unitOfWork)
+public class AuthConroller(IUnitOfWork unitOfWork, IUserService userService,
+    ITokenService tokenService) : BaseContoller(unitOfWork)
 {
     private readonly IUserService _userService = userService;
     private readonly ITokenService _tokenService = tokenService;

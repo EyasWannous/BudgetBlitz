@@ -1,10 +1,12 @@
 ﻿using BudgetBlitz.Domain.Abstractions;
 using BudgetBlitz.Presentation.DTO.Category;
 using BudgetBlitz.Presentation.Mappers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BudgetBlitz.Presentation.Controllers;
 
+[Authorize]
 public class CategoriesController(IUnitOfWork unitOfWork) : BaseContoller(unitOfWork)
 {
 

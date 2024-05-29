@@ -40,6 +40,8 @@ public class TokenService(IOptionsMonitor<JwtOptions> options,IUnitOfWork unitOf
         {
             Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.Add(_options.ExpireTime),
+            Audience = _options.ValidAudience,
+            Issuer = _options.ValidIssuer,
             SigningCredentials = new SigningCredentials
             (
                 new SymmetricSecurityKey(signingKey),

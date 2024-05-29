@@ -2,12 +2,12 @@
 using BudgetBlitz.Domain.Models;
 using BudgetBlitz.Presentation.DTO.Income;
 using BudgetBlitz.Presentation.Mappers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BudgetBlitz.Presentation.Controllers;
 
-[Route("api/[controller]")]
-[ApiController]
+[Authorize]
 public class IncomesController(IUnitOfWork unitOfWork) : BaseContoller(unitOfWork)
 {
     [HttpGet]
