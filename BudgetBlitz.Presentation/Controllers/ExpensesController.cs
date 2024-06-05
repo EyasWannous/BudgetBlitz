@@ -3,13 +3,16 @@ using BudgetBlitz.Domain.Models;
 using BudgetBlitz.Presentation.DTO.Expense;
 using BudgetBlitz.Presentation.Mappers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Principal;
 
 namespace BudgetBlitz.Presentation.Controllers;
 
 [Authorize]
-public class ExpensesController(IUnitOfWork unitOfWork) : BaseContoller(unitOfWork)
+public class ExpensesController(IUnitOfWork unitOfWork,UserManager<User> userManager) : BaseContoller(unitOfWork)
 {
+    private readonly UserManager<User> _userManager = userManager;
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
@@ -23,9 +26,6 @@ public class ExpensesController(IUnitOfWork unitOfWork) : BaseContoller(unitOfWo
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
         var expense = await _unitOfWork.Expenses.GetByIdAsync(id);
         if (expense is null)
             return NotFound();
@@ -37,10 +37,19 @@ public class ExpensesController(IUnitOfWork unitOfWork) : BaseContoller(unitOfWo
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] IncomingExpenseDTO incomingExpenseDTO)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        var hasCategory = await _unitOfWork.Categories.GetByIdAsync(incomingExpenseDTO.CategoryId);
+        if (hasCategory is null)
+            return BadRequest();
 
-        var expense = await _unitOfWork.Expenses.AddAsync(incomingExpenseDTO.Incoming());
+        var user = await _userManager.GetUserAsync(HttpContext.User);
+        if (user is null)
+            return BadRequest();
+
+        var newExpense = incomingExpenseDTO.Incoming();
+
+        newExpense.UserId = user.Id;
+
+        var expense = await _unitOfWork.Expenses.AddAsync(newExpense);
 
         await _unitOfWork.CompleteAsync();
 
@@ -51,9 +60,6 @@ public class ExpensesController(IUnitOfWork unitOfWork) : BaseContoller(unitOfWo
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete([FromRoute] int id)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
         var expense = await _unitOfWork.Expenses.GetByIdAsync(id);
         if (expense is null)
             return NotFound();
@@ -69,15 +75,16 @@ public class ExpensesController(IUnitOfWork unitOfWork) : BaseContoller(unitOfWo
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update([FromRoute] int id, [FromBody] IncomingExpenseDTO incomingExpenseDTO)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
         var expense = await _unitOfWork.Expenses.GetByIdAsync(id);
         if (expense is null)
             return NotFound();
 
+        var user = await _userManager.GetUserAsync(HttpContext.User);
+        if (user is null)
+            return BadRequest();
+
         var hasUser = await _unitOfWork.Users.GetByIdAsync(expense.UserId);
-        if (hasUser is null || hasUser.Id != incomingExpenseDTO.UserId)
+        if (hasUser is null || hasUser.Id != user.Id)
             return BadRequest();
 
         var hasCategory = await _unitOfWork.Categories.GetByIdAsync(expense.CategoryId);

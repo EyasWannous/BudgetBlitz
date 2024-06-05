@@ -22,7 +22,6 @@ public static class IncomeMapper
         {
             Amount = incomingIncomeDTO.Amount,
             Date = incomingIncomeDTO.Date,
-            UserId = incomingIncomeDTO.UserId
         };
     }
 }

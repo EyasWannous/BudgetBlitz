@@ -14,9 +14,6 @@ public class NotificationController(IUnitOfWork unitOfWork, IFirebaseService fir
     [HttpPost]
     public async Task<IActionResult> SendMessage([FromBody] IncomingMessageRequest request)
     {
-        if(!ModelState.IsValid)
-            return BadRequest(ModelState);
-
         //var message = new Message()
         //{
         //    Notification = new Notification
@@ -50,7 +47,7 @@ public class NotificationController(IUnitOfWork unitOfWork, IFirebaseService fir
     [HttpGet("{deviceToken}")]
     public async Task<IActionResult> RegisterDeviceToken([FromRoute] string deviceToken)
     {
-        if (!ModelState.IsValid || string.IsNullOrWhiteSpace(deviceToken))
+        if (string.IsNullOrWhiteSpace(deviceToken))
             return BadRequest(ModelState);
 
         var result = await _firebaseService.RegisterDeviceTokenAsync(deviceToken, HttpContext.User);

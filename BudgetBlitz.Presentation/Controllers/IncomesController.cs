@@ -3,13 +3,16 @@ using BudgetBlitz.Domain.Models;
 using BudgetBlitz.Presentation.DTO.Income;
 using BudgetBlitz.Presentation.Mappers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BudgetBlitz.Presentation.Controllers;
 
 [Authorize]
-public class IncomesController(IUnitOfWork unitOfWork) : BaseContoller(unitOfWork)
+public class IncomesController(IUnitOfWork unitOfWork, UserManager<User> userManager) : BaseContoller(unitOfWork)
 {
+    private readonly UserManager<User> _userManager = userManager;
+
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -22,9 +25,6 @@ public class IncomesController(IUnitOfWork unitOfWork) : BaseContoller(unitOfWor
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
         var income = await _unitOfWork.Incomes.GetByIdAsync(id);
         if (income is null)
             return NotFound();
@@ -36,10 +36,15 @@ public class IncomesController(IUnitOfWork unitOfWork) : BaseContoller(unitOfWor
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] IncomingIncomeDTO incomingIncomeDTO)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        var user = await _userManager.GetUserAsync(HttpContext.User);
+        if (user is null)
+            return BadRequest();
+        
+        var newIncome = incomingIncomeDTO.Incoming();
 
-        var income = await _unitOfWork.Incomes.AddAsync(incomingIncomeDTO.Incoming());
+        newIncome.UserId = user.Id;
+
+        var income = await _unitOfWork.Incomes.AddAsync(newIncome);
 
         await _unitOfWork.CompleteAsync();
 
@@ -50,9 +55,6 @@ public class IncomesController(IUnitOfWork unitOfWork) : BaseContoller(unitOfWor
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete([FromRoute] int id)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
         var income = await _unitOfWork.Incomes.GetByIdAsync(id);
         if (income is null)
             return NotFound();
@@ -68,15 +70,16 @@ public class IncomesController(IUnitOfWork unitOfWork) : BaseContoller(unitOfWor
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update([FromRoute] int id, [FromBody] IncomingIncomeDTO incomingIncomeDTO)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
         var income = await _unitOfWork.Incomes.GetByIdAsync(id);
         if (income is null)
             return NotFound();
 
-        var hasUser = await _unitOfWork.Users.GetByIdAsync(incomingIncomeDTO.UserId);
-        if (hasUser is null || hasUser.Id != income.UserId)
+        var user = await _userManager.GetUserAsync(HttpContext.User);
+        if (user is null)
+            return BadRequest();
+
+        var hasUser = await _unitOfWork.Users.GetByIdAsync(income.UserId);
+        if (hasUser is null || hasUser.Id != user.Id)
             return BadRequest();
 
         income.Date = incomingIncomeDTO.Date;

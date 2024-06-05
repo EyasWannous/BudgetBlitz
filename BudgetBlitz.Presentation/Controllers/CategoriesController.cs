@@ -22,9 +22,6 @@ public class CategoriesController(IUnitOfWork unitOfWork) : BaseContoller(unitOf
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
         var category = await _unitOfWork.Categories.GetByIdAsync(id);
         if (category is null)
             return NotFound();
@@ -36,9 +33,6 @@ public class CategoriesController(IUnitOfWork unitOfWork) : BaseContoller(unitOf
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] IncomingCategoryDTO incomingCategoryDTO)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
         var category = await _unitOfWork.Categories.AddAsync(incomingCategoryDTO.Incoming());
 
         await _unitOfWork.CompleteAsync();
@@ -50,9 +44,6 @@ public class CategoriesController(IUnitOfWork unitOfWork) : BaseContoller(unitOf
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete([FromRoute] int id)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
         var category = await _unitOfWork.Categories.GetByIdAsync(id);
         if (category is null)
             return NotFound();
@@ -68,9 +59,6 @@ public class CategoriesController(IUnitOfWork unitOfWork) : BaseContoller(unitOf
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update([FromRoute] int id, [FromBody] IncomingCategoryDTO incomingCategoryDTO)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
         var category = await _unitOfWork.Categories.GetByIdAsync(id);
         if (category is null)
             return NotFound();

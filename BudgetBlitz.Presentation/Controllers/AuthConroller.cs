@@ -15,9 +15,6 @@ public class AuthConroller(IUnitOfWork unitOfWork, IUserService userService,
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] IncomingUserRegisterationDTO incomingUserRegisterationDTO)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
         if (incomingUserRegisterationDTO.EmailIsNullOrWhiteSpace)
             return NotFound("Invalid Email");
 
@@ -57,9 +54,6 @@ public class AuthConroller(IUnitOfWork unitOfWork, IUserService userService,
     [HttpPost("loginUserName")]
     public async Task<IActionResult> LoginUserName([FromBody] IncomingUserLoginUsingUserNameDTO incomingUserLoginUsingUserNameDTO)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
         var result = await _userService.LoginUserUsingUserNameAsync(
             incomingUserLoginUsingUserNameDTO.UserName,
             incomingUserLoginUsingUserNameDTO.Password
@@ -96,9 +90,6 @@ public class AuthConroller(IUnitOfWork unitOfWork, IUserService userService,
     [HttpPost("loginEmail")]
     public async Task<IActionResult> LoginEmail([FromBody] IncomingUserLoginUsingEmailDTO incomingUserLoginUsingEmailDTO)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
         var result = await _userService.LoginUserUsingEmailAsync(
             incomingUserLoginUsingEmailDTO.Email,
             incomingUserLoginUsingEmailDTO.Password
@@ -134,9 +125,6 @@ public class AuthConroller(IUnitOfWork unitOfWork, IUserService userService,
     [HttpPost("refreshToken")]
     public async Task<IActionResult> RefreshToken([FromBody] IncomingRefreshTokenDTO incomingRefreshTokenDTO)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
         if (incomingRefreshTokenDTO.JwtTokenOrRefreshTokenIsNullOrWhiteSpace)
             return NotFound();
 
@@ -170,9 +158,6 @@ public class AuthConroller(IUnitOfWork unitOfWork, IUserService userService,
     [HttpGet("confirmEmail")]
     public async Task<IActionResult> ConfirmEmail([FromBody] IncomingUserConfirmationEmailDTO incomingUserConfirmationEmailDTO)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
         if (incomingUserConfirmationEmailDTO.UserIdOrTokenIsNullOrWhiteSpace)
             return NotFound();
 
@@ -196,9 +181,6 @@ public class AuthConroller(IUnitOfWork unitOfWork, IUserService userService,
     [HttpPost("forgetPassword")]
     public async Task<IActionResult> ForgetPassword([FromBody] IncomingForgetPasswordDTO incomingForgetPasswordDTO)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
         if (incomingForgetPasswordDTO.EmailIsNullOrWhiteSpace)
             return NotFound();
 
@@ -221,9 +203,6 @@ public class AuthConroller(IUnitOfWork unitOfWork, IUserService userService,
     [HttpPost("ResetPassword")]
     public async Task<IActionResult> ResetPassword([FromBody] IncomingResetPasswordDTO incomingResetPasswordDTO)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
         if (incomingResetPasswordDTO.EmailIsNullOrWhiteSpace)
             return NotFound("Invalid Email");
 

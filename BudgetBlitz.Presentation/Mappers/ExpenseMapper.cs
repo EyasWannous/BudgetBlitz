@@ -23,7 +23,6 @@ public static class ExpenseMapper
         {
             Amount = incomingExpenseDTO.Amount,
             Date = incomingExpenseDTO.Date,
-            UserId = incomingExpenseDTO.UserId,
             CategoryId = incomingExpenseDTO.CategoryId
         };
     }
