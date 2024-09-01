@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BudgetBlitz.Presentation.Controllers;
 
 [Authorize]
-public class IncomesController(IUnitOfWork unitOfWork, UserManager<User> userManager) : BaseContoller(unitOfWork)
+public class IncomesController(IUnitOfWork unitOfWork, UserManager<User> userManager) : BaseController(unitOfWork)
 {
     private readonly UserManager<User> _userManager = userManager;
 

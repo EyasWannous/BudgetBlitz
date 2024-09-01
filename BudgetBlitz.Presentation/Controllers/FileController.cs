@@ -12,11 +12,11 @@ using System.Collections;
 namespace BudgetBlitz.Presentation.Controllers;
 
 [Authorize]
-public class FileController(IUnitOfWork unitOfWork, IDataExportService dataExportService) : BaseContoller(unitOfWork)
+public class FileController(IUnitOfWork unitOfWork, IDataExportService dataExportService) : BaseController(unitOfWork)
 {
     private readonly IDataExportService _dataExportService = dataExportService;
 
-    [HttpGet("downloadexcel")]
+    [HttpGet("downloadُExcel")]
     public async Task<IActionResult> DownloadExcel(CancellationToken cancellationToken = default)
     {
         var files = await _dataExportService.ExportExcelAsync(HttpContext.User, cancellationToken);

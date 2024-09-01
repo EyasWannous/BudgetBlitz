@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BudgetBlitz.Presentation.Controllers;
 
 [Authorize]
-public class CategoriesController(IUnitOfWork unitOfWork) : BaseContoller(unitOfWork)
+public class CategoriesController(IUnitOfWork unitOfWork) : BaseController(unitOfWork)
 {
 
     [HttpGet]

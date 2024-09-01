@@ -5,12 +5,11 @@ using BudgetBlitz.Presentation.Mappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Principal;
 
 namespace BudgetBlitz.Presentation.Controllers;
 
 [Authorize]
-public class ExpensesController(IUnitOfWork unitOfWork,UserManager<User> userManager) : BaseContoller(unitOfWork)
+public class ExpensesController(IUnitOfWork unitOfWork,UserManager<User> userManager) : BaseController(unitOfWork)
 {
     private readonly UserManager<User> _userManager = userManager;
 

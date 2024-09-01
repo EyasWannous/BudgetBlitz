@@ -5,7 +5,7 @@ namespace BudgetBlitz.Presentation.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class BaseContoller(IUnitOfWork unitOfWork) : ControllerBase
+public class BaseController(IUnitOfWork unitOfWork) : ControllerBase
 {
     protected readonly IUnitOfWork _unitOfWork = unitOfWork;
 }

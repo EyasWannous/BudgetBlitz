@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BudgetBlitz.Presentation.Controllers;
 
 [Authorize]
-public class NotificationController(IUnitOfWork unitOfWork, IFirebaseService firebaseService) : BaseContoller(unitOfWork)
+public class NotificationController(IUnitOfWork unitOfWork, IFirebaseService firebaseService) : BaseController(unitOfWork)
 {
     private readonly IFirebaseService _firebaseService = firebaseService;
 
