@@ -57,12 +57,12 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 
-//builder.Services.AddStackExchangeRedisCache(redisOpitons =>
-//{
-//    string connectionString = builder.Configuration.GetConnectionString("Redis")!;
+builder.Services.AddStackExchangeRedisCache(redisOpitons =>
+{
+    string connectionString = builder.Configuration.GetConnectionString("Redis")!;
 
-//    redisOpitons.Configuration = connectionString;
-//});
+    redisOpitons.Configuration = connectionString;
+});
 
 // IMemoryCache
 //builder.Services.AddMemoryCache();

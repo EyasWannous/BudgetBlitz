@@ -16,11 +16,20 @@ public class BaseRepository<T>(AppDbContext context, ICacheService cacheService)
         string keyAll = $"allOf_{typeof(T)}";
         string keyone = $"oneOf_{typeof(T)}";
 
-        await _cacheService.RemoveAsync(keyAll);
-        await _cacheService.RemoveByPrefixAsync(keyone);
+        //await _cacheService.RemoveAsync(keyAll);
+        //await _cacheService.RemoveByPrefixAsync(keyone);
 
-        await _context.Set<T>().AddAsync(entity);
+        //await Task.WhenAll(_cacheService.RemoveAsync(keyAll), _cacheService.RemoveByPrefixAsync(keyone));
+
+        //await _context.Set<T>().AddAsync(entity);
         
+        await Task.WhenAll
+        (
+            _cacheService.RemoveAsync(keyAll),
+            _cacheService.RemoveByPrefixAsync(keyone),
+            _context.Set<T>().AddAsync(entity).AsTask()
+        );
+
         return entity;
     }
 
@@ -39,8 +48,10 @@ public class BaseRepository<T>(AppDbContext context, ICacheService cacheService)
         string keyAll = $"allOf_{typeof(T)}";
         string keyone = $"oneOf_{typeof(T)}";
 
-        await _cacheService.RemoveAsync(keyAll);
-        await _cacheService.RemoveByPrefixAsync(keyone);
+        //await _cacheService.RemoveAsync(keyAll);
+        //await _cacheService.RemoveByPrefixAsync(keyone);
+
+        await Task.WhenAll(_cacheService.RemoveAsync(keyAll), _cacheService.RemoveByPrefixAsync(keyone));
 
         _context.Set<T>().Remove(entity);
     }
@@ -70,9 +81,14 @@ public class BaseRepository<T>(AppDbContext context, ICacheService cacheService)
         
         item = await _context.Set<T>().FindAsync(id);
         if (item is not null)
+        {
             await _cacheService.SetAsync(key, item);
+
+            // To Track The Object:
+            _context.Set<T>().Attach(item);
+        }
         
-        return item;
+        return null;
     }
 
     public async Task<T> UpdateAsync(T entity)
