@@ -1,7 +1,7 @@
 ﻿using BudgetBlitz.Domain.Abstractions;
 using BudgetBlitz.Domain.Models;
-using BudgetBlitz.Presentation.DTO.Income;
-using BudgetBlitz.Presentation.Mappers;
+using BudgetBlitz.Application.DTO.Income;
+using BudgetBlitz.Application.Mappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -39,7 +39,7 @@ public class IncomesController(IUnitOfWork unitOfWork, UserManager<User> userMan
         var user = await _userManager.GetUserAsync(HttpContext.User);
         if (user is null)
             return BadRequest();
-        
+
         var newIncome = incomingIncomeDTO.Incoming();
 
         newIncome.UserId = user.Id;

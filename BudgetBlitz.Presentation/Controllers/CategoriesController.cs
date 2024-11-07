@@ -1,6 +1,6 @@
 ﻿using BudgetBlitz.Domain.Abstractions;
-using BudgetBlitz.Presentation.DTO.Category;
-using BudgetBlitz.Presentation.Mappers;
+using BudgetBlitz.Application.DTO.Category;
+using BudgetBlitz.Application.Mappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

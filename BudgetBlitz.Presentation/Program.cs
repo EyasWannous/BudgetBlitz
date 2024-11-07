@@ -1,18 +1,15 @@
 using BudgetBlitz.Application.IServices;
-using BudgetBlitz.Application.Options;
+using BudgetBlitz.Application.Services;
 using BudgetBlitz.Domain.Abstractions;
 using BudgetBlitz.Domain.Models;
 using BudgetBlitz.Infrastructure.Data;
 using BudgetBlitz.Infrastructure.Services;
+using BudgetBlitz.Presentation.Extensions;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using System.Text;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,35 +24,7 @@ builder.Services.AddDbContext<AppDbContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
-builder.Services.AddSwaggerGen(option =>
-{
-    option.SwaggerDoc("v1", new OpenApiInfo { Title = "BudgetBlitz API", Version = "v1" });
-
-    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        In = ParameterLocation.Header,
-        Description = "Please enter a valid token",
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        BearerFormat = "JWT",
-        Scheme = "Bearer"
-    });
-
-    option.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer",
-                }
-            },
-            Array.Empty<string>()
-        }
-    });
-});
+//builder.Services.AddSwaggerDocumentation();
 
 builder.Services.AddStackExchangeRedisCache(redisOpitons =>
 {
@@ -121,41 +90,7 @@ builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
 
 
 // Jwt Bearer Start
-var jwtOptionsSection = builder.Configuration.GetSection("JwtOptions");
-
-builder.Services.Configure<JwtOptions>(jwtOptionsSection);
-
-var jwtOptions = jwtOptionsSection.Get<JwtOptions>();
-
-var signingKey = Encoding.ASCII.GetBytes(jwtOptions!.SigningKey);
-
-var tokenValidationParameters = new TokenValidationParameters
-{
-    ValidateIssuerSigningKey = true,
-    IssuerSigningKey = new SymmetricSecurityKey(signingKey),
-    ValidateIssuer = true,
-    ValidIssuer = jwtOptions.ValidIssuer,
-    ValidateAudience = true,
-    ValidAudience = jwtOptions.ValidAudience,
-    RequireExpirationTime = true,
-    ValidateLifetime = true,
-};
-
-builder.Services.AddSingleton(tokenValidationParameters);
-
-
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
-}).AddJwtBearer(jwt =>
-{
-    jwt.SaveToken = true;
-    jwt.TokenValidationParameters = tokenValidationParameters;
-
-});
+builder.Services.AddJwtAuthentication(builder.Configuration);
 // Jwt Bearer End
 
 
@@ -167,9 +102,14 @@ FirebaseApp.Create(new AppOptions()
         Path.Combine
         (
             AppDomain.CurrentDomain.BaseDirectory,
-            "budgetblitz-96d43-firebase-adminsdk-6j2me-fad541b3f0.json"
+            "budgetblitzmoneymanagement-firebase-adminsdk-cls9r-4c6850ab22.json"
         )
     ),
+});
+
+builder.Services.Configure<ScalarOptions>(options =>
+{
+    options.OpenApiRoutePattern = "/swagger/v1/swagger.json";
 });
 
 
@@ -180,6 +120,11 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    app.MapScalarApiReference(options =>
+    {
+        options.OpenApiRoutePattern = "/swagger/v1/swagger.json";
+    });
 }
 
 app.UseHttpsRedirection();

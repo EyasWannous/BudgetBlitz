@@ -1,6 +1,6 @@
-﻿using BudgetBlitz.Application.IServices;
+﻿using BudgetBlitz.Application.DTO.Message;
+using BudgetBlitz.Application.IServices;
 using BudgetBlitz.Domain.Abstractions;
-using BudgetBlitz.Presentation.DTO.Message;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -51,7 +51,7 @@ public class NotificationController(IUnitOfWork unitOfWork, IFirebaseService fir
             return BadRequest(ModelState);
 
         var result = await _firebaseService.RegisterDeviceTokenAsync(deviceToken, HttpContext.User);
-        if(!result)
+        if (!result)
             return BadRequest();
 
         return Ok();

@@ -1,6 +1,6 @@
 ﻿using BudgetBlitz.Application.IServices;
 using BudgetBlitz.Domain.Abstractions;
-using BudgetBlitz.Presentation.DTO.Account;
+using BudgetBlitz.Application.DTO.Account;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BudgetBlitz.Presentation.Controllers;
@@ -101,7 +101,7 @@ public class AuthController(IUnitOfWork unitOfWork, IUserService userService,
                 IsSuccess = false,
             });
 
-        var (JwtToken, RefreshToken ,ExpireDate) = await _tokenService.GenerateJwtTokenAsync(result.User!);
+        var (JwtToken, RefreshToken, ExpireDate) = await _tokenService.GenerateJwtTokenAsync(result.User!);
 
 
 
@@ -162,7 +162,7 @@ public class AuthController(IUnitOfWork unitOfWork, IUserService userService,
             return NotFound();
 
         var result = await _userService.ConfirmEmailAsync(incomingUserConfirmationEmailDTO.UserId, incomingUserConfirmationEmailDTO.Token);
-        if(!result.IsSuccess)
+        if (!result.IsSuccess)
             return BadRequest(new OutgoingUserConfirmationEmailDTO
             {
                 Message = result.Message,
@@ -213,7 +213,7 @@ public class AuthController(IUnitOfWork unitOfWork, IUserService userService,
                 IsSuccess = false,
             });
 
-        var result = await _userService.ResetPasswordAsync(incomingResetPasswordDTO.Email,incomingResetPasswordDTO.Token,incomingResetPasswordDTO.NewPasswrod);
+        var result = await _userService.ResetPasswordAsync(incomingResetPasswordDTO.Email, incomingResetPasswordDTO.Token, incomingResetPasswordDTO.NewPasswrod);
         if (!result.IsSuccess)
             return BadRequest(new OutgoingForgetPasswordDTO
             {

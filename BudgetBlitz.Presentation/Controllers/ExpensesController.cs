@@ -1,7 +1,7 @@
 ﻿using BudgetBlitz.Domain.Abstractions;
 using BudgetBlitz.Domain.Models;
-using BudgetBlitz.Presentation.DTO.Expense;
-using BudgetBlitz.Presentation.Mappers;
+using BudgetBlitz.Application.DTO.Expense;
+using BudgetBlitz.Application.Mappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BudgetBlitz.Presentation.Controllers;
 
 [Authorize]
-public class ExpensesController(IUnitOfWork unitOfWork,UserManager<User> userManager) : BaseController(unitOfWork)
+public class ExpensesController(IUnitOfWork unitOfWork, UserManager<User> userManager) : BaseController(unitOfWork)
 {
     private readonly UserManager<User> _userManager = userManager;
 
