@@ -1,7 +1,7 @@
-﻿using BudgetBlitz.Application.IServices;
-using BudgetBlitz.Domain.Abstractions;
+﻿using BudgetBlitz.Domain.Abstractions.IRepositories;
 using BudgetBlitz.Domain.Models;
 using BudgetBlitz.Infrastructure.Data;
+using BudgetBlitz.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace BudgetBlitz.Infrastructure.Repositories;

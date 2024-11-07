@@ -1,12 +1,11 @@
-﻿using BudgetBlitz.Application.IServices;
-using BudgetBlitz.Domain.Abstractions;
+﻿using BudgetBlitz.Domain.Abstractions.IRepositories;
 using BudgetBlitz.Domain.Models;
 using BudgetBlitz.Infrastructure.Data;
-using Microsoft.Extensions.Caching.Memory;
+using BudgetBlitz.Infrastructure.Services;
 
 namespace BudgetBlitz.Infrastructure.Repositories;
 
-public class IncomeRepository(AppDbContext context, ICacheService cacheService) 
+public class IncomeRepository(AppDbContext context, ICacheService cacheService)
     : BaseRepository<Income>(context, cacheService), IIncomeRepository
 {
 }

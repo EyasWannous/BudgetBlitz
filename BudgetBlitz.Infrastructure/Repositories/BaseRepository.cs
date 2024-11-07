@@ -1,6 +1,6 @@
-﻿using BudgetBlitz.Application.IServices;
-using BudgetBlitz.Domain.Abstractions;
+﻿using BudgetBlitz.Domain.Abstractions.IRepositories;
 using BudgetBlitz.Infrastructure.Data;
+using BudgetBlitz.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -22,7 +22,7 @@ public class BaseRepository<T>(AppDbContext context, ICacheService cacheService)
         //await Task.WhenAll(_cacheService.RemoveAsync(keyAll), _cacheService.RemoveByPrefixAsync(keyone));
 
         //await _context.Set<T>().AddAsync(entity);
-        
+
         await Task.WhenAll
         (
             _cacheService.RemoveAsync(keyAll),
@@ -65,7 +65,7 @@ public class BaseRepository<T>(AppDbContext context, ICacheService cacheService)
             return items;
 
         items = await _context.Set<T>().AsNoTracking().ToListAsync();
-        
+
         await _cacheService.SetAsync(key, items);
 
         return items;
@@ -74,11 +74,11 @@ public class BaseRepository<T>(AppDbContext context, ICacheService cacheService)
     public async Task<T?> GetByIdAsync(int id)
     {
         string key = $"oneOf_{typeof(T)}_{id}";
-        
+
         var item = await _cacheService.GetAsync<T>(key);
         if (item is not null)
             return item;
-        
+
         item = await _context.Set<T>().FindAsync(id);
         if (item is not null)
         {
@@ -87,7 +87,7 @@ public class BaseRepository<T>(AppDbContext context, ICacheService cacheService)
             // To Track The Object:
             _context.Set<T>().Attach(item);
         }
-        
+
         return null;
     }
 

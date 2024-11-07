@@ -1,13 +1,12 @@
-﻿using BudgetBlitz.Application.IServices;
-using BudgetBlitz.Infrastructure.Services;
-using BudgetBlitz.Domain.Abstractions;
+﻿using BudgetBlitz.Infrastructure.Services;
 using BudgetBlitz.Domain.Models;
 using BudgetBlitz.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using BudgetBlitz.Domain.Abstractions.IRepositories;
 
 namespace BudgetBlitz.Infrastructure.Repositories;
 
-public class RefreshTokenRepository(AppDbContext context, ICacheService cacheService) 
+public class RefreshTokenRepository(AppDbContext context, ICacheService cacheService)
     : BaseRepository<RefreshToken>(context, cacheService), IRefreshTokenRepository
 {
     public async Task<RefreshToken?> GetByTokenAsync(string token)

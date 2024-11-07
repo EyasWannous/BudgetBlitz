@@ -1,8 +1,7 @@
-﻿using BudgetBlitz.Application.IServices;
-using BudgetBlitz.Domain.Abstractions;
-using BudgetBlitz.Domain.Models;
+﻿using BudgetBlitz.Domain.Abstractions;
+using BudgetBlitz.Domain.Abstractions.IRepositories;
 using BudgetBlitz.Infrastructure.Repositories;
-using Microsoft.Extensions.Caching.Memory;
+using BudgetBlitz.Infrastructure.Services;
 
 namespace BudgetBlitz.Infrastructure.Data;
 
@@ -16,8 +15,8 @@ public class UnitOfWork(AppDbContext context, ICacheService cacheService) : IUni
 
     public ICategoryRepository Categories { get; } = new CategoryRepository(context, cacheService);
 
-    public IExpenseRepository Expenses { get; } = new ExpenseRepository(context, cacheService);   
-    
+    public IExpenseRepository Expenses { get; } = new ExpenseRepository(context, cacheService);
+
     public IRefreshTokenRepository RefreshTokens { get; } = new RefreshTokenRepository(context, cacheService);
 
     public IUserDeviceRepository UserDevices { get; } = new UserDeviceRepository(context, cacheService);
