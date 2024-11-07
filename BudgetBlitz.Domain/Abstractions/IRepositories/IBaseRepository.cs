@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace BudgetBlitz.Domain.Abstractions;
+namespace BudgetBlitz.Domain.Abstractions.IRepositories;
 
 public interface IBaseRepository<T> where T : class
 {

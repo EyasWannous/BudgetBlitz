@@ -1,4 +1,4 @@
-﻿using BudgetBlitz.Domain.Models;
+﻿using BudgetBlitz.Domain.Abstractions.IRepositories;
 
 namespace BudgetBlitz.Domain.Abstractions;
 
